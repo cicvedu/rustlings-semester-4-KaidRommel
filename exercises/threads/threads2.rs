@@ -22,22 +22,18 @@ fn main() {
     for _ in 0..10 {
         let status_shared = Arc::clone(&status);
         let handle = thread::spawn(move || {
-            println!("sleep start");
             thread::sleep(Duration::from_millis(250));
             // TODO: You must take an action before you update a shared value
-            println!("sleep over");
             let mut num = status_shared.lock().unwrap();
             num.jobs_completed += 1;
         });
         handles.push(handle);
     }
     for handle in handles {
-        println!("before join");
         handle.join().unwrap();
         // TODO: Print the value of the JobStatus.jobs_completed. Did you notice
         // anything interesting in the output? Do you have to 'join' on all the
         // handles?
-        println!("after join");
         println!("jobs completed {}", status.lock().unwrap().jobs_completed);
     }
 }
